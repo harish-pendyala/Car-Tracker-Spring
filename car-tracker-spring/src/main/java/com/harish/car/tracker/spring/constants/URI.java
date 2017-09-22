@@ -1,0 +1,9 @@
+package com.harish.car.tracker.spring.constants;
+
+public final class URI {
+	
+	public static final String VEHICLES = "vehicles";
+	public static final String READINGS = "readings";
+	public static final String ID = "{vin}";
+
+}
