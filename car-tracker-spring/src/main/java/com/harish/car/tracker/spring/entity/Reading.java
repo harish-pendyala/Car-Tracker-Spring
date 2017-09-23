@@ -1,6 +1,7 @@
 package com.harish.car.tracker.spring.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -21,7 +22,7 @@ public class Reading {
     private String vin;
     private double latitude;
     private double longitude;
-    private Date timestamp;
+    private String timestamp;
     private float fuelVolume;
     private int speed;
     private int engineHp;
@@ -71,11 +72,11 @@ public class Reading {
         this.longitude = longitude;
     }
 
-    public Date getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

@@ -23,7 +23,7 @@ public class SwaggerConfig {
 	
 	private ApiInfo apiInfo(){
 		Contact contact = new Contact("Harish Pendyala", "https://github.com/harish-pendyala/Car-Tracker-Spring", "harish.pendyala1@gmail.com");
-		ApiInfo info = new ApiInfo("Car Tracker Spring REST API", "A simple REST API fro tracking the Car", "1.0.0", "Tnc", contact, "MIT", "https://opensource.org/licences/MIT");
+		ApiInfo info = new ApiInfo("Car Tracker Spring REST API", "A simple REST API for tracking the Car", "1.0.0", "Tnc", contact, "MIT", "https://opensource.org/licences/MIT");
 		return info;
 		
 	}

@@ -1,5 +1,8 @@
 package com.harish.car.tracker.spring.entity;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -16,9 +19,9 @@ public class Vehicle {
 	private String vin;
 	private String make;
 	private String model;
-	private String year;
-	private String redlineRpm;
-	private String maxFuelVolume;
+	private int year;
+	private int redlineRpm;
+	private float maxFuelVolume;
 	private String lastServiceDate;
 	public String getVin() {
 		return vin;
@@ -38,22 +41,23 @@ public class Vehicle {
 	public void setModel(String model) {
 		this.model = model;
 	}
-	public String getYear() {
+
+	public int getYear() {
 		return year;
 	}
-	public void setYear(String year) {
+	public void setYear(int year) {
 		this.year = year;
 	}
-	public String getRedlineRpm() {
+	public int getRedlineRpm() {
 		return redlineRpm;
 	}
-	public void setRedlineRpm(String redlineRpm) {
+	public void setRedlineRpm(int redlineRpm) {
 		this.redlineRpm = redlineRpm;
 	}
-	public String getMaxFuelVolume() {
+	public float getMaxFuelVolume() {
 		return maxFuelVolume;
 	}
-	public void setMaxFuelVolume(String maxFuelVolume) {
+	public void setMaxFuelVolume(float maxFuelVolume) {
 		this.maxFuelVolume = maxFuelVolume;
 	}
 	public String getLastServiceDate() {

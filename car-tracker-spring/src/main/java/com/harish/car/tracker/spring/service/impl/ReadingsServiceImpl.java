@@ -1,21 +1,35 @@
 package com.harish.car.tracker.spring.service.impl;
 
+
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.harish.car.tracker.spring.entity.Alert;
 import com.harish.car.tracker.spring.entity.Reading;
+import com.harish.car.tracker.spring.entity.Tires;
+import com.harish.car.tracker.spring.entity.Vehicle;
 import com.harish.car.tracker.spring.exception.NotFoundException;
 import com.harish.car.tracker.spring.repository.ReadingsRepository;
+import com.harish.car.tracker.spring.service.AlertsService;
 import com.harish.car.tracker.spring.service.ReadingsService;
+import com.harish.car.tracker.spring.service.VehicleService;
 
 @Service
 public class ReadingsServiceImpl implements ReadingsService{
 	
 	private ReadingsRepository repository;
-	public ReadingsServiceImpl(ReadingsRepository repository) {
+	private AlertsService alertsService;
+	private VehicleService vehicleService;
+	
+	public ReadingsServiceImpl(ReadingsRepository repository,AlertsService alertsService, VehicleService vehicleService) {
 		this.repository = repository;
+		this.alertsService = alertsService;
+		this.vehicleService = vehicleService;
 	}
 
 	@Override
@@ -33,8 +47,80 @@ public class ReadingsServiceImpl implements ReadingsService{
 
 	@Override
 	public Reading addReading(Reading reading) {
-		return repository.addReading(reading);
+		Reading r = repository.addReading(reading);
+		Vehicle v= vehicleService.findOne(r.getVin());
+		String priority;
+		String type;
+		String description;
+        if(v != null) {
+        	System.out.println("Creating Alert ");
+            if (reading.getEngineRpm() > v.getRedlineRpm()) {
+                type = "Engine RPM";
+                priority = "HIGH";
+                description = "Engine RPM exceeds Red Line RPM.";
+                System.out.println("Creating Alert of RPM ");
+                createAlert(reading,v,type,priority,description);
+            }
+            if (reading.getFuelVolume() < (v.getMaxFuelVolume()*0.1)) {
+                type = "Fuel Volume";
+                priority = "MEDIUM";
+                description = "Fuel Volume is below Minimum Level.";
+                System.out.println("Creating Alert of Fuel ");
+                createAlert(reading,v,type,priority,description);
+            }
+            if (checkTirePressureLow(reading.getTires())) {
+                type = "Tire Pressure Low";
+                priority = "LOW";
+                description = "Tire Pressure is below Minimum Level.";
+                System.out.println("Creating Alert of Low Tire ");
+                createAlert(reading,v,type,priority,description);
+            }
+            if (checkTirePressureHigh(reading.getTires())) {
+                type = "Tire Pressure High";
+                priority = "LOW";
+                description = "Tire Pressure is Above Maximum Level.";
+                System.out.println("Creating Alert of high Tire ");
+                createAlert(reading,v,type,priority,description);
+            }
+            if (reading.isEngineCoolantLow() || reading.isCheckEngineLightOn()) {
+                type = "Engine Issue";
+                priority = "LOW";
+                description = "Either Engine Coolant is Low or Engine Light is ON.";
+                createAlert(reading,v,type,priority,description);
+            }
+        }
+		
+		return r;
+		
+	}
+	
+	private void createAlert(Reading reading, Vehicle v, String type, String priority, String description) {
+		Alert a = new Alert();
+		a.setAlert_type(type);
+		a.setDescription(description);
+		a.setPriority(priority);
+		a.setReading(reading);
+		a.setVehicle(v);
+		a.setVin(v.getVin());
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		Instant instant = timestamp.toInstant();
+		a.setTimestamp(instant.toString());
+		alertsService.createAlert(a);
 		
 	}
 
+	public boolean checkTirePressureLow(Tires tires) {
+        float value = 32.0f;
+        if(tires.getFrontLeft() < value || tires.getFrontRight() < value || tires.getRearLeft() < value || tires.getRearRight() < value){
+        	return true;        	
+        }
+        return false;
+    }
+	public boolean checkTirePressureHigh(Tires tires) {
+        float value = 36.0f;
+        if(tires.getFrontLeft() > value || tires.getFrontRight() > value || tires.getRearLeft() > value || tires.getRearRight() > value){
+        	return true;        	
+        }
+        return false;
+    }
 }
