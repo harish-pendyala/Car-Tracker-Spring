@@ -3,6 +3,7 @@ package com.harish.car.tracker.spring.entity;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
@@ -18,7 +19,7 @@ public class Tires {
     private int rearRight;
 
     public Tires() {
-        this.id = UUID.randomUUID().toString();
+       this.id = UUID.randomUUID().toString();
     }
 
     public String getId() {

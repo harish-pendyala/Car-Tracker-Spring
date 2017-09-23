@@ -29,7 +29,7 @@ public class VehicleServiceImpl implements VehicleService{
 	public Vehicle findOne(String vin) {
 		Vehicle existing = repository.findOne(vin);
 		if (existing == null){
-			throw new NotFoundException("User with id "+ vin + "does not exist");
+			throw new NotFoundException("Vehicle with vin "+ vin + "does not exist");
 		}
 		return existing;
 	}
